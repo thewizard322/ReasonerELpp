@@ -9,9 +9,5 @@ public class Main {
         OWLOntology o = man.loadOntology(IRI.create("http://purl.obolibrary.org/obo/go.owl"));
         OWLDataFactory df = man.getOWLDataFactory();
         MyReasoner myReasoner = new MyReasoner(o);
-//        for(OWLEquivalentClassesAxiom owl: o.getAxioms(AxiomType.EQUIVALENT_CLASSES)){
-//            System.out.println(owl);
-//        }
-
     }
 }

@@ -13,16 +13,12 @@ public class MyReasoner{
     private OWLOntology ontology;
     private OWLClass bottom;
 
-    public MyReasoner(OWLOntology o) throws OWLOntologyCreationException {
+    public MyReasoner(OWLOntology o) {
         this.ontology=o;
-        for(OWLAxiom ax : ontology.getAxioms()){
-            if(ax.getAxiomType().equals(AxiomType.)){
-                System.out.println(ax);
-            }
-        }
+        transformToGCI();
     }
 
-    private Set<OWLSubClassOfAxiom> transformToGCI() throws OWLOntologyCreationException {
+    private Set<OWLSubClassOfAxiom> transformToGCI() {
         OWLOntologyManager man = OWLManager.createOWLOntologyManager();
         OWLDataFactory df = man.getOWLDataFactory();
 
