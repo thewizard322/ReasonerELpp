@@ -15,6 +15,8 @@ public class MyReasoner{
 
     public MyReasoner(OWLOntology o) {
         this.ontology=o;
+        this.bottom = OWLManager.createOWLOntologyManager()
+                .getOWLDataFactory().getOWLClass(o.getOntologyID().getOntologyIRI().get() + "#Bottom");
         transformToGCI();
     }
 
