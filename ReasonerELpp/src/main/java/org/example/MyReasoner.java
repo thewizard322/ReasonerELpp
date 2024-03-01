@@ -165,22 +165,22 @@ public class MyReasoner{
             reduceToClassPair.getKey().addAll((tempPair.getKey()));
             OWLObjectSomeValuesFrom normalizedSomeValuesFrom = this.df.getOWLObjectSomeValuesFrom(relation,reduceToClassPair.getValue());
             returnPair = new Pair<>(reduceToClassPair.getKey(),normalizedSomeValuesFrom);
-            return returnPair;
         }
         //REMINDER: TORNARE ESISTENZIALE DI CLASSE (REDUCETOCLASSPAIR POTREBBE ESSERE VUOTO DOPO IF)
         else if(filler.getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)){
-            tempPair = normalizeObjectSomeValueFrom((OWLObjectSomeValuesFrom) filler); //Torna un set e una classe temp
+            tempPair = normalizeObjectSomeValueFrom((OWLObjectSomeValuesFrom) filler); //Torna un set e una classe temp o esistenziale
             OWLClassExpression expression = tempPair.getValue();
+            reduceToClassPair = new Pair<>(tempPair.getKey(),expression);
             if(!expression.getClassExpressionType().equals(ClassExpressionType.OWL_CLASS)){
                 reduceToClassPair = reduceToClass(expression); //trasformo l'esistenziale nuovo in una variabile temp
             }
             //Creo esistenziale con quello di ora con il temp creato prima
             OWLObjectSomeValuesFrom normalizedSomeValuesFrom = this.df.getOWLObjectSomeValuesFrom(relation,reduceToClassPair.getValue());
-            reduceToClassPair = reduceToClass(normalizedSomeValuesFrom); //trasformo l'esistenziale nuovo in una variabile temp
+            tempPair.getKey().addAll(reduceToClassPair.getKey());
+            returnPair = new Pair<>(tempPair.getKey(),normalizedSomeValuesFrom);
             reduceToClassPair.getKey().addAll((tempPair.getKey()));
-            return returnPair;
         }
-        return null;
+        return returnPair;
     }
 
     private OWLClass createTempClass(){
