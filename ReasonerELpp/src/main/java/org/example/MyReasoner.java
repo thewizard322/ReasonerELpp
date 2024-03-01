@@ -187,8 +187,9 @@ public class MyReasoner{
     }
 
     private OWLClass createTempClass(){
-        IRI IOR = ontology.getOntologyID().getOntologyIRI().get();
-        OWLClass tempClass = this.df.getOWLClass(IRI.create(IOR + "#TEMP" + universalTempCount));
+        //IRI IOR = ontology.getOntologyID().getOntologyIRI().get();
+        //OWLClass tempClass = this.df.getOWLClass(IRI.create(IOR + "#TEMP" + universalTempCount));
+        OWLClass tempClass = this.df.getOWLClass(IRI.create("#TEMP" + universalTempCount));
         universalTempCount++;
         return tempClass;
     }

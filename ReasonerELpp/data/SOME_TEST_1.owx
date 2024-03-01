@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
 <Ontology xmlns="http://www.w3.org/2002/07/owl#"
-     xml:base="urn:absolute:h"
+     xml:base="http://www.w3.org/2002/07/owl#"
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
      xmlns:xml="http://www.w3.org/XML/1998/namespace"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-     ontologyIRI="urn:absolute:h">
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
     <Prefix name="" IRI="http://www.semanticweb.org/chris/ontologies/2024/2/untitled-ontology-16/"/>
     <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
     <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
@@ -13,118 +12,128 @@
     <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
     <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
     <Declaration>
-        <Class IRI="#A"/>
+        <Class IRI="urn:absolute:h#A"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#B"/>
+        <Class IRI="urn:absolute:h#B"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#C"/>
+        <Class IRI="urn:absolute:h#C"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#D"/>
+        <Class IRI="urn:absolute:h#D"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#E"/>
+        <Class IRI="urn:absolute:h#E"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#F"/>
+        <Class IRI="urn:absolute:h#F"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#G"/>
+        <Class IRI="urn:absolute:h#G"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#H"/>
+        <Class IRI="urn:absolute:h#H"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#I"/>
+        <Class IRI="urn:absolute:h#I"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#L"/>
+        <Class IRI="urn:absolute:h#L"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#M"/>
+        <Class IRI="urn:absolute:h#M"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#N"/>
+        <Class IRI="urn:absolute:h#N"/>
     </Declaration>
     <Declaration>
-        <ObjectProperty IRI="#r1"/>
+        <ObjectProperty IRI="urn:absolute:h#r1"/>
     </Declaration>
     <Declaration>
-        <ObjectProperty IRI="#r2"/>
+        <ObjectProperty IRI="urn:absolute:h#r2"/>
     </Declaration>
     <Declaration>
-        <ObjectProperty IRI="#r3"/>
+        <ObjectProperty IRI="urn:absolute:h#r3"/>
     </Declaration>
     <Declaration>
-        <ObjectProperty IRI="#r4"/>
+        <ObjectProperty IRI="urn:absolute:h#r4"/>
     </Declaration>
     <Declaration>
-        <ObjectProperty IRI="#r5"/>
+        <ObjectProperty IRI="urn:absolute:h#r5"/>
     </Declaration>
     <SubClassOf>
         <ObjectIntersectionOf>
-            <Class IRI="#D"/>
-            <Class IRI="#E"/>
+            <Class IRI="urn:absolute:h#D"/>
+            <Class IRI="urn:absolute:h#E"/>
             <ObjectSomeValuesFrom>
-                <ObjectProperty IRI="#r1"/>
+                <ObjectProperty IRI="urn:absolute:h#r1"/>
                 <ObjectIntersectionOf>
-                    <Class IRI="#A"/>
-                    <Class IRI="#B"/>
-                    <Class IRI="#C"/>
+                    <Class IRI="urn:absolute:h#A"/>
+                    <Class IRI="urn:absolute:h#B"/>
+                    <Class IRI="urn:absolute:h#C"/>
                 </ObjectIntersectionOf>
             </ObjectSomeValuesFrom>
             <ObjectSomeValuesFrom>
-                <ObjectProperty IRI="#r3"/>
+                <ObjectProperty IRI="urn:absolute:h#r3"/>
                 <ObjectIntersectionOf>
-                    <Class IRI="#I"/>
+                    <Class IRI="urn:absolute:h#I"/>
                     <ObjectSomeValuesFrom>
-                        <ObjectProperty IRI="#r4"/>
-                        <Class IRI="#L"/>
+                        <ObjectProperty IRI="urn:absolute:h#r4"/>
+                        <Class IRI="urn:absolute:h#L"/>
                     </ObjectSomeValuesFrom>
                 </ObjectIntersectionOf>
             </ObjectSomeValuesFrom>
             <ObjectSomeValuesFrom>
-                <ObjectProperty IRI="#r5"/>
+                <ObjectProperty IRI="urn:absolute:h#r5"/>
                 <ObjectSomeValuesFrom>
-                    <ObjectProperty IRI="#r2"/>
+                    <ObjectProperty IRI="urn:absolute:h#r2"/>
                     <ObjectSomeValuesFrom>
-                        <ObjectProperty IRI="#r3"/>
+                        <ObjectProperty IRI="urn:absolute:h#r3"/>
                         <ObjectIntersectionOf>
-                            <Class IRI="#A"/>
-                            <Class IRI="#B"/>
-                            <Class IRI="#C"/>
+                            <Class IRI="urn:absolute:h#A"/>
+                            <Class IRI="urn:absolute:h#B"/>
+                            <Class IRI="urn:absolute:h#C"/>
                             <ObjectSomeValuesFrom>
-                                <ObjectProperty IRI="#r1"/>
-                                <Class IRI="#D"/>
+                                <ObjectProperty IRI="urn:absolute:h#r1"/>
+                                <Class IRI="urn:absolute:h#D"/>
                             </ObjectSomeValuesFrom>
                         </ObjectIntersectionOf>
                     </ObjectSomeValuesFrom>
                 </ObjectSomeValuesFrom>
             </ObjectSomeValuesFrom>
         </ObjectIntersectionOf>
-        <Class IRI="#A"/>
+        <Class IRI="urn:absolute:h#A"/>
+    </SubClassOf>
+    <SubClassOf>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="urn:absolute:h#r1"/>
+            <Class IRI="urn:absolute:h#A"/>
+        </ObjectSomeValuesFrom>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="urn:absolute:h#r2"/>
+            <Class IRI="urn:absolute:h#B"/>
+        </ObjectSomeValuesFrom>
     </SubClassOf>
     <SubObjectPropertyOf>
-        <ObjectProperty IRI="#r1"/>
-        <ObjectProperty abbreviatedIRI="owl:topObjectProperty"/>
+        <ObjectProperty IRI="urn:absolute:h#r1"/>
+        <ObjectProperty IRI="topObjectProperty"/>
     </SubObjectPropertyOf>
     <SubObjectPropertyOf>
-        <ObjectProperty IRI="#r2"/>
-        <ObjectProperty abbreviatedIRI="owl:topObjectProperty"/>
+        <ObjectProperty IRI="urn:absolute:h#r2"/>
+        <ObjectProperty IRI="topObjectProperty"/>
     </SubObjectPropertyOf>
     <SubObjectPropertyOf>
-        <ObjectProperty IRI="#r3"/>
-        <ObjectProperty abbreviatedIRI="owl:topObjectProperty"/>
+        <ObjectProperty IRI="urn:absolute:h#r3"/>
+        <ObjectProperty IRI="topObjectProperty"/>
     </SubObjectPropertyOf>
     <SubObjectPropertyOf>
-        <ObjectProperty IRI="#r4"/>
-        <ObjectProperty abbreviatedIRI="owl:topObjectProperty"/>
+        <ObjectProperty IRI="urn:absolute:h#r4"/>
+        <ObjectProperty IRI="topObjectProperty"/>
     </SubObjectPropertyOf>
     <SubObjectPropertyOf>
-        <ObjectProperty IRI="#r5"/>
-        <ObjectProperty abbreviatedIRI="owl:topObjectProperty"/>
+        <ObjectProperty IRI="urn:absolute:h#r5"/>
+        <ObjectProperty IRI="topObjectProperty"/>
     </SubObjectPropertyOf>
 </Ontology>
 
