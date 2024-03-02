@@ -62,58 +62,33 @@
     <Declaration>
         <ObjectProperty IRI="urn:absolute:h#r5"/>
     </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="http://www.co-ode.org/ontologies/ont.owl#a"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="http://www.co-ode.org/ontologies/ont.owl#b"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="http://www.co-ode.org/ontologies/ont.owl#c"/>
+    </Declaration>
     <SubClassOf>
         <ObjectIntersectionOf>
-            <Class IRI="urn:absolute:h#D"/>
+            <Class IRI="urn:absolute:h#A"/>
             <Class IRI="urn:absolute:h#E"/>
+        </ObjectIntersectionOf>
+        <ObjectIntersectionOf>
+            <Class IRI="urn:absolute:h#B"/>
             <ObjectSomeValuesFrom>
                 <ObjectProperty IRI="urn:absolute:h#r1"/>
-                <ObjectIntersectionOf>
-                    <Class IRI="urn:absolute:h#A"/>
-                    <Class IRI="urn:absolute:h#B"/>
-                    <Class IRI="urn:absolute:h#C"/>
-                </ObjectIntersectionOf>
-            </ObjectSomeValuesFrom>
-            <ObjectSomeValuesFrom>
-                <ObjectProperty IRI="urn:absolute:h#r3"/>
-                <ObjectIntersectionOf>
-                    <Class IRI="urn:absolute:h#I"/>
-                    <ObjectSomeValuesFrom>
-                        <ObjectProperty IRI="urn:absolute:h#r4"/>
-                        <Class IRI="urn:absolute:h#L"/>
-                    </ObjectSomeValuesFrom>
-                </ObjectIntersectionOf>
-            </ObjectSomeValuesFrom>
-            <ObjectSomeValuesFrom>
-                <ObjectProperty IRI="urn:absolute:h#r5"/>
                 <ObjectSomeValuesFrom>
                     <ObjectProperty IRI="urn:absolute:h#r2"/>
-                    <ObjectSomeValuesFrom>
-                        <ObjectProperty IRI="urn:absolute:h#r3"/>
-                        <ObjectIntersectionOf>
-                            <Class IRI="urn:absolute:h#A"/>
-                            <Class IRI="urn:absolute:h#B"/>
-                            <Class IRI="urn:absolute:h#C"/>
-                            <ObjectSomeValuesFrom>
-                                <ObjectProperty IRI="urn:absolute:h#r1"/>
-                                <Class IRI="urn:absolute:h#D"/>
-                            </ObjectSomeValuesFrom>
-                        </ObjectIntersectionOf>
-                    </ObjectSomeValuesFrom>
+                    <ObjectIntersectionOf>
+                        <Class IRI="Thing"/>
+                        <Class IRI="urn:absolute:h#E"/>
+                    </ObjectIntersectionOf>
                 </ObjectSomeValuesFrom>
             </ObjectSomeValuesFrom>
         </ObjectIntersectionOf>
-        <Class IRI="urn:absolute:h#A"/>
-    </SubClassOf>
-    <SubClassOf>
-        <ObjectSomeValuesFrom>
-            <ObjectProperty IRI="urn:absolute:h#r1"/>
-            <Class IRI="urn:absolute:h#A"/>
-        </ObjectSomeValuesFrom>
-        <ObjectSomeValuesFrom>
-            <ObjectProperty IRI="urn:absolute:h#r2"/>
-            <Class IRI="urn:absolute:h#B"/>
-        </ObjectSomeValuesFrom>
     </SubClassOf>
     <SubObjectPropertyOf>
         <ObjectProperty IRI="urn:absolute:h#r1"/>

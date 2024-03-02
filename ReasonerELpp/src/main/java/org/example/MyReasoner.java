@@ -6,25 +6,87 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.model.parameters.Imports;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class MyReasoner{
 
     private OWLOntology ontology;
     private OWLDataFactory df;
     private int universalTempCount = 0;
+    private Set<OWLSubClassOfAxiom> normalizedAxiomsSet = null;
+    private Map<OWLClassExpression,Set<OWLClassExpression>> S = null;
+    private Map<OWLObjectPropertyExpression,Set<Pair<OWLClassExpression,OWLClassExpression>>> R = null;
 
     public MyReasoner(OWLOntology o) {
         this.ontology=o;
         OWLOntologyManager man = OWLManager.createOWLOntologyManager();
         this.df = man.getOWLDataFactory();
-        normalization();
+        this.normalizedAxiomsSet = normalization();
+        initializeMapping();
+        System.out.println(this.S);
+        System.out.println(this.R);
+        //System.out.println(normalizedAxiomsSet);
     }
 
-    private void normalization(){
+//    private void fit(){
+//        Set<OWLClassExpression> set = new HashSet<>();
+//        this.S = new HashMap<>();
+//        for(OWLSubClassOfAxiom ax : normalizedAxiomsSet){
+//            OWLClassExpression subClass = ax.getSubClass();
+//            OWLClassExpression superClass = ax.getSuperClass();
+//            if(ax.getAxiomType())
+//        }
+//    }
+
+    private void initializeMapping() {
+        this.S = new HashMap<>();
+        this.R = new HashMap<>();
+        for (OWLSubClassOfAxiom ax : normalizedAxiomsSet) {
+            Set<OWLClassExpression> setS = new HashSet<>();
+            Set<Pair<OWLClassExpression,OWLClassExpression>> setR = new HashSet<>();
+
+            OWLClassExpression subClass = ax.getSubClass();
+            OWLClassExpression superClass = ax.getSubClass();
+            if(!subClass.getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)){
+                setS.add(subClass);
+                setS.add(this.df.getOWLThing());
+                S.put(subClass,setS);
+            }else{
+                OWLObjectSomeValuesFrom cast = (OWLObjectSomeValuesFrom) subClass;
+                R.put(cast.getProperty(),setR);
+            }
+            if(!superClass.getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)){
+                setS.add(superClass);
+                setS.add(this.df.getOWLThing());
+                S.put(superClass,setS);
+            }else{
+                OWLObjectSomeValuesFrom cast = (OWLObjectSomeValuesFrom) superClass;
+                R.put(cast.getProperty(),setR);
+            }
+        }
+    }
+
+    private void checkBottom(OWLClassExpression expression){
+        Set<OWLClassExpression> set = new HashSet<>();
+        set = expression.getNestedClassExpressions();
+        for(OWLClassExpression ex : set){
+            if(ex.getClassExpressionType().equals(ClassExpressionType.OWL_CLASS)){
+                OWLClass cl = (OWLClass) ex;
+                if(cl.isBottomEntity()){
+                    throw new IllegalArgumentException("Trovato bottom in posizione non consentita");
+                }
+            }
+        }
+    }
+
+    private void subAndSuperCheckBottom(OWLClassExpression subClass, OWLClassExpression superClass){
+        checkBottom(subClass);
+        if(!superClass.getClassExpressionType().equals(ClassExpressionType.OWL_CLASS)){
+            checkBottom(superClass);
+        }
+    }
+
+    private Set<OWLSubClassOfAxiom> normalization(){
 
         Set<OWLAxiom> subClassOfAxioms = this.ontology.getTBoxAxioms(Imports.EXCLUDED);
         Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression> leftPair;
@@ -34,58 +96,64 @@ public class MyReasoner{
         for(OWLAxiom ax : subClassOfAxioms){
 
             OWLSubClassOfAxiom cast = (OWLSubClassOfAxiom) ax;
+            System.out.println(cast);
             OWLClassExpression subClass = cast.getSubClass();
             OWLClassExpression superClass = cast.getSuperClass();
+            subAndSuperCheckBottom(subClass,superClass);
 
             leftPair = subClassNormalization(subClass);
-            //rightPair = superClassNormalization(superClass);
+            rightPair = superClassNormalization(superClass);
 
-            resultSet.addAll(leftPair.getKey());    //Aggiungo al resultSet il set delle
-            //resultSet.addAll(rightPair.getKey());   //Aggiungo al resultSet il set delle normalizzazioni
-            //OWLSubClassOfAxiom normalizedSubClass = this.df.getOWLSubClassOfAxiom(leftPair.getValue(),rightPair.getValue());
-            //resultSet.add(normalizedSubClass);
-
-            System.out.println(cast);
+            resultSet.addAll(leftPair.getKey());    //Aggiungo al resultSet il set delle normalizzazioni
+            resultSet.addAll(rightPair.getKey());   //Aggiungo al resultSet il set delle normalizzazioni
+            if(leftPair.getValue().getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM) &&
+                    rightPair.getValue().getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)){
+                leftPair = reduceToClass(leftPair.getValue());
+            }
+            OWLSubClassOfAxiom normalizedSubClass = this.df.getOWLSubClassOfAxiom(leftPair.getValue(),rightPair.getValue());
+            resultSet.add(normalizedSubClass);
             System.out.println("FIRST");
             System.out.println(leftPair.getKey());
             System.out.println("SECOND");
             System.out.println(leftPair.getValue());
 
-//            System.out.println("FIRST");
-//            System.out.println(rightPair.getKey());
-//            System.out.println("SECOND");
-//            System.out.println(rightPair.getValue());
+            System.out.println("FIRST");
+            System.out.println(rightPair.getKey());
+            System.out.println("SECOND");
+            System.out.println(rightPair.getValue());
 
-            //System.out.println("NORMALIZED CLASS");
-            //System.out.println(normalizedSubClass);
-            break;
+            System.out.println("NORMALIZED CLASS");
+            System.out.println(normalizedSubClass);
         }
+        return resultSet;
     }
 
     private Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression> subClassNormalization(OWLClassExpression subClass){
         Set<OWLSubClassOfAxiom> set = new HashSet<>();
         ClassExpressionType typeSubClass = subClass.getClassExpressionType();
+        Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression> returnPair = null;
 
-        if(typeSubClass.equals(ClassExpressionType.OWL_CLASS)){ //Verifica se è una classe semplice
-            return new Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression>(set,subClass);
+        if(typeSubClass.equals(ClassExpressionType.OWL_CLASS) || typeSubClass.equals(ClassExpressionType.OBJECT_ONE_OF)){ //Verifica se è una classe semplice
+            returnPair = new Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression>(set,subClass);
         } else if(typeSubClass.equals(ClassExpressionType.OBJECT_INTERSECTION_OF)){ //Verifica se è intersezione
             OWLObjectIntersectionOf intersectionOf = (OWLObjectIntersectionOf) subClass;
             int subClassSize = intersectionOf.getOperandsAsList().size();
-            return normalizeIntersectionOf(intersectionOf); //Il pair è ritornato dalla funzione chiamata
+            returnPair = normalizeIntersectionOf(intersectionOf); //Il pair è ritornato dalla funzione chiamata
         }else if(typeSubClass.equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)){
             OWLObjectSomeValuesFrom objectSomeValuesFrom = (OWLObjectSomeValuesFrom) subClass;
-            return normalizeObjectSomeValueFrom(objectSomeValuesFrom);
+            returnPair = normalizeObjectSomeValueFrom(objectSomeValuesFrom);
         }
-        return null;
+        return returnPair;
     }
 
     private Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression> superClassNormalization(OWLClassExpression superClass){
         Set<OWLSubClassOfAxiom> set = new HashSet<>();
         Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression> tempPair;
-        Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression> returnPair;
+        Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression> returnPair = null;
 
-        if(superClass.getClassExpressionType().equals(ClassExpressionType.OWL_CLASS)){ //Verifica se è una classe semplice
-            return new Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression>(set,superClass);
+        if(superClass.getClassExpressionType().equals(ClassExpressionType.OWL_CLASS) ||
+                superClass.getClassExpressionType().equals(ClassExpressionType.OBJECT_ONE_OF)){ //Verifica se è una classe semplice
+            returnPair = new Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression>(set,superClass);
         } else if(superClass.getClassExpressionType().equals(ClassExpressionType.OBJECT_INTERSECTION_OF)){ //Verifica se è intersezione
             OWLObjectIntersectionOf intersectionOf = (OWLObjectIntersectionOf) superClass;
             tempPair = normalizeIntersectionOf(intersectionOf);
@@ -94,16 +162,16 @@ public class MyReasoner{
             return returnPair;
         }else if(superClass.getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)){
             OWLObjectSomeValuesFrom objectSomeValuesFrom = (OWLObjectSomeValuesFrom) superClass;
-            return normalizeObjectSomeValueFrom(objectSomeValuesFrom);
+            returnPair = normalizeObjectSomeValueFrom(objectSomeValuesFrom);
         }
-        return null;
+        return returnPair;
     }
 
     private Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression> normalizeIntersectionOf(OWLObjectIntersectionOf intersectionOf){
         ArrayList<OWLClassExpression> arrayListOfExpressions = new ArrayList<>(intersectionOf.getOperandsAsList());
         int size = arrayListOfExpressions.size();
 
-        List<OWLClass> setTempClasses = new ArrayList<>();
+        List<OWLClassExpression> setTempClasses = new ArrayList<>();
         Set<OWLSubClassOfAxiom> returnSet = new HashSet<>();
         Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression> returnPair = null;
         Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression> tempPair = null;
@@ -140,7 +208,7 @@ public class MyReasoner{
         }
 
         if(size%2!=0){
-            setTempClasses.add((OWLClass)arrayListOfExpressions.get(size-1));
+            setTempClasses.add(arrayListOfExpressions.get(size-1));
         }
 
         OWLObjectIntersectionOf intersectionRecur = this.df.getOWLObjectIntersectionOf(setTempClasses); //Creo intersezione per ricorsione
@@ -159,7 +227,8 @@ public class MyReasoner{
         Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression> reduceToClassPair = null;
         Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression> returnPair = null;
 
-        if(filler.getClassExpressionType().equals(ClassExpressionType.OWL_CLASS)){
+        if(filler.getClassExpressionType().equals(ClassExpressionType.OWL_CLASS) ||
+                filler.getClassExpressionType().equals(ClassExpressionType.OBJECT_ONE_OF)){
             return new Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression>(returnSet,someValuesFrom);
         }
         else if(filler.getClassExpressionType().equals(ClassExpressionType.OBJECT_INTERSECTION_OF)){
@@ -175,7 +244,7 @@ public class MyReasoner{
             OWLClassExpression expression = tempPair.getValue(); //Prendo l'espressione a destra della coppia (che è esistenziale di una classe)
             reduceToClassPair = new Pair<>(tempPair.getKey(),expression); //Inizializzo Pair con contenuto uguale a tempPair
 
-            if(!expression.getClassExpressionType().equals(ClassExpressionType.OWL_CLASS)){
+            if(expression.getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)){
                 reduceToClassPair = reduceToClass(expression); //trasformo l'esistenziale nuovo in una variabile temp
                 tempPair.getKey().addAll(reduceToClassPair.getKey()); //Aggiungo nel Set gli assiomi di reduceToClass (se non entrato in if non aggiunge nulla)
             }
@@ -209,17 +278,18 @@ public class MyReasoner{
     private Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression> reduceToClass(OWLClassExpression expression){
         OWLClass tempClass = createTempClass();
         ArrayList<OWLClassExpression> arrayListOfExpressions;
+        Pair<Set<OWLSubClassOfAxiom>,OWLClassExpression> returnPair = null;
         if(expression.getClassExpressionType().equals(ClassExpressionType.OBJECT_INTERSECTION_OF)){
             OWLObjectIntersectionOf intersectionOf = (OWLObjectIntersectionOf) expression;
             arrayListOfExpressions = new ArrayList<>(intersectionOf.getOperandsAsList());
-            return new Pair<>(normalizeSingleIntersectionOf(arrayListOfExpressions.get(0),
+            returnPair = new Pair<>(normalizeSingleIntersectionOf(arrayListOfExpressions.get(0),
                     arrayListOfExpressions.get(1),tempClass),tempClass);
         }
         else if(expression.getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)){
             OWLObjectSomeValuesFrom objectSomeValuesFrom = (OWLObjectSomeValuesFrom) expression;
-            return new Pair<>(normalizeSingleObjectSomeValuesFrom(objectSomeValuesFrom,tempClass),tempClass);
+            returnPair = new Pair<>(normalizeSingleObjectSomeValuesFrom(objectSomeValuesFrom,tempClass),tempClass);
         }
-        return null;
+        return returnPair;
     }
 
     private Set<OWLSubClassOfAxiom> normalizeSingleObjectSomeValuesFrom(OWLObjectSomeValuesFrom objectSomeValuesFrom, OWLClass tempClass){
