@@ -22,6 +22,8 @@ public class MyReasoner{
         OWLOntologyManager man = OWLManager.createOWLOntologyManager();
         this.df = man.getOWLDataFactory();
         this.normalizedAxiomsSet = normalization();
+        this.S = new HashMap<>();
+        this.R = new HashMap<>();
         initializeMapping();
         System.out.println(this.S);
         System.out.println(this.R);
@@ -39,30 +41,30 @@ public class MyReasoner{
 //    }
 
     private void initializeMapping() {
-        this.S = new HashMap<>();
-        this.R = new HashMap<>();
         for (OWLSubClassOfAxiom ax : normalizedAxiomsSet) {
             Set<OWLClassExpression> setS = new HashSet<>();
             Set<Pair<OWLClassExpression,OWLClassExpression>> setR = new HashSet<>();
 
             OWLClassExpression subClass = ax.getSubClass();
-            OWLClassExpression superClass = ax.getSubClass();
-            if(!subClass.getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)){
-                setS.add(subClass);
-                setS.add(this.df.getOWLThing());
-                S.put(subClass,setS);
-            }else{
-                OWLObjectSomeValuesFrom cast = (OWLObjectSomeValuesFrom) subClass;
-                R.put(cast.getProperty(),setR);
-            }
-            if(!superClass.getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)){
-                setS.add(superClass);
-                setS.add(this.df.getOWLThing());
-                S.put(superClass,setS);
-            }else{
-                OWLObjectSomeValuesFrom cast = (OWLObjectSomeValuesFrom) superClass;
-                R.put(cast.getProperty(),setR);
-            }
+            OWLClassExpression superClass = ax.getSuperClass();
+            initializeSingleMapping(subClass);
+            initializeSingleMapping(superClass);
+        }
+    }
+
+    private void initializeSingleMapping(OWLClassExpression expression) {
+        Set<OWLClassExpression> setS = new HashSet<>();
+        if (!expression.getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)) {
+            setS.add(expression);
+            setS.add(this.df.getOWLThing());
+            S.put(expression, setS);
+        } else {
+            Set<Pair<OWLClassExpression, OWLClassExpression>> setR = new HashSet<>();
+            OWLObjectSomeValuesFrom cast = (OWLObjectSomeValuesFrom) expression;
+            R.put(cast.getProperty(), setR);
+            setS.add(cast.getFiller()); //Aggiungo al setS la classe (o singleton) dell'esistenziale
+            setS.add(this.df.getOWLThing()); //Aggiungo il TOP
+            S.put(cast.getFiller(), setS); //Inserisco nella mappa S la classe (o singleton) dell'esistenziale e il setS creato per essa
         }
     }
 
