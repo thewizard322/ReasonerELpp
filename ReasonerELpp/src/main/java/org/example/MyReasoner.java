@@ -41,13 +41,13 @@ public class MyReasoner {
         OWLSubClassOfAxiom cast = (OWLSubClassOfAxiom) query;
         Set<OWLSubClassOfAxiom> mergedSubAxiomsSet = new HashSet<>();
 
-        System.out.println(cast);
         OWLClassExpression subClass = cast.getSubClass();
         OWLClassExpression superClass = cast.getSuperClass();
         subAndSuperCheckBottom(subClass, superClass);
         fictitiousSet = createFictitious(subClass, superClass);
         mergedSubAxiomsSet.addAll(this.normalizedAxiomsSet);
         mergedSubAxiomsSet.addAll(normalization(fictitiousSet));
+        System.out.println(mergedSubAxiomsSet);
         initializeMapping(mergedSubAxiomsSet);
         applyingCompletionRules(mergedSubAxiomsSet);
     }
@@ -107,7 +107,7 @@ public class MyReasoner {
             for (OWLClassExpression key : this.S.keySet()) {
                 checkCR.add(CR1(key, mergedSubClassAxioms));
                 checkCR.add(CR2(key, mergedSubClassAxioms));
-
+                checkCR.add(CR3(key, mergedSubClassAxioms));
 
                 for (Boolean b : checkCR) {
                     if (b) {
@@ -117,9 +117,9 @@ public class MyReasoner {
                 }
                 checkCR.clear();
             }
-            System.out.println(repeatLoop);
         }
         System.out.println(this.S);
+        System.out.println(this.R);
     }
 
     private boolean CR1(OWLClassExpression key, Set<OWLSubClassOfAxiom> mergedSubClassAxioms) {
@@ -166,6 +166,31 @@ public class MyReasoner {
         return ret;
     }
 
+    private boolean CR3(OWLClassExpression key, Set<OWLSubClassOfAxiom> mergedSubClassAxioms) {
+        boolean checkAdd, ret = false;
+        Set<OWLClassExpression> tempSet = new HashSet<>(this.S.get(key));
+        for (OWLClassExpression setElementS : tempSet) { //Ciclo su ogni C' appartenente ad S(C)
+            for (OWLSubClassOfAxiom sub : mergedSubClassAxioms) {
+                OWLClassExpression subClass = sub.getSubClass();
+                OWLClassExpression superClass = sub.getSuperClass();
+                if (!subClass.getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)) {
+                    if (subClass.equals(setElementS)) {
+                        if (superClass.getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)) {
+                            OWLObjectSomeValuesFrom castedSuperClass = (OWLObjectSomeValuesFrom) superClass;
+                            OWLObjectPropertyExpression relation = castedSuperClass.getProperty();
+                            OWLClassExpression filler = castedSuperClass.getFiller();
+                            Pair<OWLClassExpression,OWLClassExpression> addPair = new Pair<>(key,filler);
+                            checkAdd = this.R.get(relation).add(addPair);
+                            if (checkAdd)
+                                ret = true;
+                        }
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
     private void checkBottom(OWLClassExpression expression) {
         Set<OWLClassExpression> set = new HashSet<>();
         set = expression.getNestedClassExpressions();
@@ -205,7 +230,8 @@ public class MyReasoner {
 
             resultSet.addAll(leftPair.getKey());    //Aggiungo al resultSet il set delle normalizzazioni
             resultSet.addAll(rightPair.getKey());   //Aggiungo al resultSet il set delle normalizzazioni
-            if (leftPair.getValue().getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM) &&
+            if ((leftPair.getValue().getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM) ||
+                    leftPair.getValue().getClassExpressionType().equals(ClassExpressionType.OBJECT_INTERSECTION_OF)) &&
                     rightPair.getValue().getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)) {
                 leftPair = reduceToClass(leftPair.getValue());
                 resultSet.addAll(leftPair.getKey());

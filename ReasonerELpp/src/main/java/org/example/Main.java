@@ -1,5 +1,6 @@
 package org.example;
 
+import javafx.util.Pair;
 import org.eclipse.rdf4j.model.vocabulary.OWL;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
@@ -11,7 +12,7 @@ import java.util.Set;
 public class Main {
     public static void main(String[] args) throws OWLOntologyCreationException {
         OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-        OWLOntology o = man.loadOntologyFromOntologyDocument(new File("ReasonerELpp/data/CR1_2_TEST.owx"));
+        OWLOntology o = man.loadOntologyFromOntologyDocument(new File("ReasonerELpp/data/CR1_2_3_TEST.owx"));
         OWLDataFactory df = man.getOWLDataFactory();
         MyReasoner myReasoner = new MyReasoner(o);
         IRI IOR = o.getOntologyID().getOntologyIRI().get();
@@ -23,6 +24,10 @@ public class Main {
         OWLObjectIntersectionOf intersectionOf = df.getOWLObjectIntersectionOf(class1,class2);
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(intersectionOf,class3);
         myReasoner.doQuery(query);
+
+        Pair<OWLClassExpression,OWLClassExpression> pair1 = new Pair<>(class1,class2);
+        Pair<OWLClassExpression,OWLClassExpression> pair2 = new Pair<>(class2,class1);
+        System.out.println(pair1.equals(pair2));
         //Set<OWLAxiom> subClassOfAxioms = o.getTBoxAxioms(Imports.EXCLUDED);
 //        OWLClass tempClass1 = df.getOWLClass(IRI.create("#TEMP1"));
 //        OWLClass tempClass2 = df.getOWLClass(IRI.create("#TEMP2"));
