@@ -1,6 +1,10 @@
 package org.example;
 
 import javafx.util.Pair;
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.model.parameters.Imports;
@@ -26,17 +30,7 @@ public class MyReasoner {
         this.R = new HashMap<>();
     }
 
-//    private void fit(){
-//        Set<OWLClassExpression> set = new HashSet<>();
-//        this.S = new HashMap<>();
-//        for(OWLSubClassOfAxiom ax : normalizedAxiomsSet){
-//            OWLClassExpression subClass = ax.getSubClass();
-//            OWLClassExpression superClass = ax.getSuperClass();
-//            if(ax.getAxiomType())
-//        }
-//    }
-
-    public void doQuery(OWLSubClassOfAxiom query) {
+    public boolean doQuery(OWLSubClassOfAxiom query) {
         Set<OWLAxiom> fictitiousSet = new HashSet<>();
         OWLSubClassOfAxiom cast = (OWLSubClassOfAxiom) query;
         Set<OWLSubClassOfAxiom> mergedSubAxiomsSet = new HashSet<>();
@@ -50,6 +44,7 @@ public class MyReasoner {
         System.out.println(mergedSubAxiomsSet);
         initializeMapping(mergedSubAxiomsSet);
         applyingCompletionRules(mergedSubAxiomsSet);
+        return this.S.get(this.df.getOWLClass("#FIT0")).contains(this.df.getOWLClass("#FIT1"));
     }
 
     private Set<OWLAxiom> createFictitious(OWLClassExpression subClass, OWLClassExpression superClass) {
@@ -104,6 +99,7 @@ public class MyReasoner {
         List<Boolean> checkCR = new LinkedList<>();
         while (repeatLoop) {
             repeatLoop = false;
+            System.out.println("INIZIO PASSO");
             for (OWLClassExpression key : this.S.keySet()) {
                 checkCR.add(CR1(key, mergedSubClassAxioms));
                 checkCR.add(CR2(key, mergedSubClassAxioms));
@@ -117,9 +113,11 @@ public class MyReasoner {
                 }
                 checkCR.clear();
             }
+            System.out.println(this.S);
+            System.out.println(this.R);
             for(OWLObjectPropertyExpression key : this.R.keySet()){
                 checkCR.add(CR4(key, mergedSubClassAxioms));
-                checkCR.add(CR5(key, mergedSubClassAxioms));
+                checkCR.add(CR5(key));
                 for (Boolean b : checkCR) {
                     if (b) {
                         repeatLoop = true;
@@ -128,9 +126,12 @@ public class MyReasoner {
                 }
                 checkCR.clear();
             }
+            System.out.println(this.S);
+            System.out.println(this.R);
+            DefaultDirectedGraph<OWLClassExpression, DefaultEdge> graphForCR6 = generateGraph();
             for(OWLClassExpression key1 : this.S.keySet()){
                 for(OWLClassExpression key2 : this.S.keySet()){
-                    checkCR.add(CR6(key1,key2));
+                    checkCR.add(CR6(key1,key2,graphForCR6));
                     for (Boolean b : checkCR) {
                         if (b) {
                             repeatLoop = true;
@@ -140,6 +141,8 @@ public class MyReasoner {
                     checkCR.clear();
                 }
             }
+            System.out.println(this.S);
+            System.out.println(this.R);
         }
         System.out.println(this.S);
         System.out.println(this.R);
@@ -239,7 +242,7 @@ public class MyReasoner {
         return ret;
     }
 
-    private boolean CR5(OWLObjectPropertyExpression key, Set<OWLSubClassOfAxiom> mergedSubClassAxioms){
+    private boolean CR5(OWLObjectPropertyExpression key){
         Set<Pair<OWLClassExpression,OWLClassExpression>> setOfPair = this.R.get(key);
         boolean checkAdd, ret = false;
         for(Pair<OWLClassExpression,OWLClassExpression> pair : setOfPair){ //Ciclo sul set di Pair
@@ -256,38 +259,62 @@ public class MyReasoner {
         return ret;
     }
 
-    private boolean CR6(OWLClassExpression key1, OWLClassExpression key2){
-        boolean checkAdd, ret = false;
-        if(!key1.equals(key2)){
+    private boolean CR6(OWLClassExpression key1, OWLClassExpression key2, DefaultDirectedGraph<OWLClassExpression, DefaultEdge> graph){
+        if(!key1.equals(key2) && !key1.isOWLNothing()){
             Set<OWLClassExpression> intersectionSetKey1AndKey2 = new HashSet<>(this.S.get(key1));
             intersectionSetKey1AndKey2.retainAll(this.S.get(key2));
             for(OWLClassExpression expression : intersectionSetKey1AndKey2){
                 if(expression.getClassExpressionType().equals(ClassExpressionType.OBJECT_ONE_OF)){
-                    if(relationOfCR6(key1,key2)){
-                        checkAdd = this.S.get(key1).addAll(this.S.get(key2));
-                        if (checkAdd)
-                            ret = true;
+                    DijkstraShortestPath<OWLClassExpression,DefaultEdge> dijkstraShortestPath
+                            = new DijkstraShortestPath<>(graph);
+                    GraphPath<OWLClassExpression,DefaultEdge> path = dijkstraShortestPath.getPath(key1,key2);
+                    if(path != null){
+                        return this.S.get(key1).addAll(this.S.get(key2));
                     }
+                    return false;
+//                    List<OWLClassExpression> shortestPath = path.getVertexList();
+//                    if(shortestPath == null)
+//                        System.out.println("null");
+//                    if(!shortestPath.isEmpty()){
+//                        return this.S.get(key1).addAll(this.S.get(key2));
+//                    }
+//                    return false;
                 }
-            }
-        }
-        return ret;
-    }
-
-    private boolean relationOfCR6(OWLClassExpression left, OWLClassExpression target){
-        for(OWLObjectPropertyExpression r: this.R.keySet()){
-            for(Pair<OWLClassExpression,OWLClassExpression> pair : this.R.get(r)){
-                OWLClassExpression leftOfPair = pair.getKey();
-                OWLClassExpression rightOfPair = pair.getValue();
-                if(leftOfPair.equals(left)) {
-                    if(rightOfPair.equals(target))
-                        return true;
-                    return relationOfCR6(rightOfPair,target);
-                }
-
             }
         }
         return false;
+    }
+
+//    private boolean relationOfCR6(OWLClassExpression left, OWLClassExpression target){
+//        for(OWLObjectPropertyExpression r: this.R.keySet()){ //Per ogni relazione r
+//            for(Pair<OWLClassExpression,OWLClassExpression> pair : this.R.get(r)){//Prendiamo il pair
+//                OWLClassExpression leftOfPair = pair.getKey();
+//                OWLClassExpression rightOfPair = pair.getValue();
+//                if(leftOfPair.equals(left)) {
+//                    if(rightOfPair.equals(target)) //Caso base
+//                        return true;
+//                    if(relationOfCR6(rightOfPair,target)) //Se hai raggiunto un caso base nella ricorsione, puoi terminare con true
+//                        return true;
+//                }
+//
+//            }
+//        }
+//        return false;
+//    }
+
+    private DefaultDirectedGraph<OWLClassExpression, DefaultEdge> generateGraph(){
+        DefaultDirectedGraph<OWLClassExpression, DefaultEdge> g = new DefaultDirectedGraph<>(DefaultEdge.class);
+        for(OWLClassExpression expression : this.S.keySet()){
+            g.addVertex(expression);
+        }
+        for(OWLObjectPropertyExpression r : this.R.keySet()){
+            for(Pair<OWLClassExpression,OWLClassExpression> pair : this.R.get(r)){
+                OWLClassExpression left = pair.getKey();
+                OWLClassExpression right = pair.getValue();
+                g.addEdge(left,right);
+            }
+        }
+        return g;
     }
 
     private void checkBottom(OWLClassExpression expression) {
