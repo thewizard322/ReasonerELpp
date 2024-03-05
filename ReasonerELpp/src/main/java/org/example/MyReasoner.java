@@ -117,6 +117,29 @@ public class MyReasoner {
                 }
                 checkCR.clear();
             }
+            for(OWLObjectPropertyExpression key : this.R.keySet()){
+                checkCR.add(CR4(key, mergedSubClassAxioms));
+                checkCR.add(CR5(key, mergedSubClassAxioms));
+                for (Boolean b : checkCR) {
+                    if (b) {
+                        repeatLoop = true;
+                        break;
+                    }
+                }
+                checkCR.clear();
+            }
+            for(OWLClassExpression key1 : this.S.keySet()){
+                for(OWLClassExpression key2 : this.S.keySet()){
+                    checkCR.add(CR6(key1,key2));
+                    for (Boolean b : checkCR) {
+                        if (b) {
+                            repeatLoop = true;
+                            break;
+                        }
+                    }
+                    checkCR.clear();
+                }
+            }
         }
         System.out.println(this.S);
         System.out.println(this.R);
@@ -191,6 +214,82 @@ public class MyReasoner {
         return ret;
     }
 
+    private boolean CR4(OWLObjectPropertyExpression key, Set<OWLSubClassOfAxiom> mergedSubClassAxioms){
+        Set<Pair<OWLClassExpression,OWLClassExpression>> setOfPair = this.R.get(key);
+        boolean checkAdd, ret = false;
+        for(Pair<OWLClassExpression,OWLClassExpression> pair : setOfPair){ //Ciclo sul set di Pair
+            OWLClassExpression leftOfPair = pair.getKey(); //Elemento sinistro del Pair (C)
+            OWLClassExpression rightOfPair = pair.getValue(); //Elemento destro del Pair (D)
+            for(OWLClassExpression expression : this.S.get(rightOfPair)){ //Ciclo sul Set di S(D) e ottengo expression = D'
+                for(OWLSubClassOfAxiom subClassOfAxiom : mergedSubClassAxioms){ //Ciclo sugli assiomi di sussunzione normalizzati
+                    OWLClassExpression leftOfSub = subClassOfAxiom.getSubClass(); //Prendo lato sinistro della sussnzione
+                    OWLClassExpression superOfSub = subClassOfAxiom.getSuperClass(); //Prendo lato destro della sussunzione (E)
+                    if(leftOfSub.getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)){ //Verifico che lato sinistro sia esiste(r.K)
+                        OWLObjectSomeValuesFrom objectSomeValuesFrom = (OWLObjectSomeValuesFrom) leftOfSub;
+                        OWLClassExpression filler = objectSomeValuesFrom.getFiller(); //Prendo la parte interna dell'esistenziale (K)
+                        if(filler.equals(expression)){ //Verifico che K==D'
+                            checkAdd = this.S.get(leftOfPair).add(superOfSub); //Aggiungo a S(C) E
+                            if (checkAdd)
+                                ret = true;
+                        }
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+    private boolean CR5(OWLObjectPropertyExpression key, Set<OWLSubClassOfAxiom> mergedSubClassAxioms){
+        Set<Pair<OWLClassExpression,OWLClassExpression>> setOfPair = this.R.get(key);
+        boolean checkAdd, ret = false;
+        for(Pair<OWLClassExpression,OWLClassExpression> pair : setOfPair){ //Ciclo sul set di Pair
+            OWLClassExpression leftOfPair = pair.getKey(); //Elemento sinistro del Pair (C)
+            OWLClassExpression rightOfPair = pair.getValue(); //Elemento destro del Pair (D)
+            for(OWLClassExpression expression : this.S.get(rightOfPair)){ //Ciclo sul Set di S(D) e ottengo expression = D'
+                if(expression.isOWLNothing()){ //Verifico se l'espressione è il Bottom
+                    checkAdd = this.S.get(leftOfPair).add(this.df.getOWLNothing()); //Aggiungo a S(C) il Bottom
+                    if (checkAdd)
+                        ret = true;
+                }
+            }
+        }
+        return ret;
+    }
+
+    private boolean CR6(OWLClassExpression key1, OWLClassExpression key2){
+        boolean checkAdd, ret = false;
+        if(!key1.equals(key2)){
+            Set<OWLClassExpression> intersectionSetKey1AndKey2 = new HashSet<>(this.S.get(key1));
+            intersectionSetKey1AndKey2.retainAll(this.S.get(key2));
+            for(OWLClassExpression expression : intersectionSetKey1AndKey2){
+                if(expression.getClassExpressionType().equals(ClassExpressionType.OBJECT_ONE_OF)){
+                    if(relationOfCR6(key1,key2)){
+                        checkAdd = this.S.get(key1).addAll(this.S.get(key2));
+                        if (checkAdd)
+                            ret = true;
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+    private boolean relationOfCR6(OWLClassExpression left, OWLClassExpression target){
+        for(OWLObjectPropertyExpression r: this.R.keySet()){
+            for(Pair<OWLClassExpression,OWLClassExpression> pair : this.R.get(r)){
+                OWLClassExpression leftOfPair = pair.getKey();
+                OWLClassExpression rightOfPair = pair.getValue();
+                if(leftOfPair.equals(left)) {
+                    if(rightOfPair.equals(target))
+                        return true;
+                    return relationOfCR6(rightOfPair,target);
+                }
+
+            }
+        }
+        return false;
+    }
+
     private void checkBottom(OWLClassExpression expression) {
         Set<OWLClassExpression> set = new HashSet<>();
         set = expression.getNestedClassExpressions();
@@ -220,7 +319,6 @@ public class MyReasoner {
         for (OWLAxiom ax : subClassOfAxioms) {
 
             OWLSubClassOfAxiom cast = (OWLSubClassOfAxiom) ax;
-            System.out.println(cast);
             OWLClassExpression subClass = cast.getSubClass();
             OWLClassExpression superClass = cast.getSuperClass();
             subAndSuperCheckBottom(subClass, superClass);

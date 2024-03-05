@@ -50,6 +50,13 @@
             <Class IRI="#C"/>
         </ObjectSomeValuesFrom>
     </SubClassOf>
+    <SubClassOf>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#r1"/>
+            <Class IRI="#C"/>
+        </ObjectSomeValuesFrom>
+        <Class IRI="#E"/>
+    </SubClassOf>
 </Ontology>
 
 

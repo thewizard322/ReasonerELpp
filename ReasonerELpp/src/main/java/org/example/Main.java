@@ -18,7 +18,7 @@ public class Main {
         IRI IOR = o.getOntologyID().getOntologyIRI().get();
         OWLClass class1 = df.getOWLClass(IOR + "#A");
         OWLClass class2 = df.getOWLClass(IOR + "#B");
-        OWLClass class3 = df.getOWLClass(IOR + "#D");
+        OWLClass class3 = df.getOWLClass(IOR + "#E");
         OWLIndividual individualD = df.getOWLNamedIndividual(IOR + "#d");
         OWLObjectOneOf objectOneOfD = df.getOWLObjectOneOf(individualD);
         OWLObjectIntersectionOf intersectionOf = df.getOWLObjectIntersectionOf(class1,class2);
