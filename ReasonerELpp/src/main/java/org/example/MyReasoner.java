@@ -17,8 +17,8 @@ public class MyReasoner {
     private OWLDataFactory df;
     private int universalTempCount = 0;
     private Set<OWLSubClassOfAxiom> normalizedAxiomsSet = null;
-    private Map<OWLClassExpression, Set<OWLClassExpression>> S = null;
-    private Map<OWLObjectPropertyExpression, Set<Pair<OWLClassExpression, OWLClassExpression>>> R = null;
+    public Map<OWLClassExpression, Set<OWLClassExpression>> S = null;
+    public Map<OWLObjectPropertyExpression, Set<Pair<OWLClassExpression, OWLClassExpression>>> R = null;
 
     public MyReasoner(OWLOntology o) {
         this.ontology = o;
@@ -35,13 +35,17 @@ public class MyReasoner {
         OWLSubClassOfAxiom cast = (OWLSubClassOfAxiom) query;
         Set<OWLSubClassOfAxiom> mergedSubAxiomsSet = new HashSet<>();
 
-        OWLClassExpression subClass = cast.getSubClass();
-        OWLClassExpression superClass = cast.getSuperClass();
-        subAndSuperCheckBottom(subClass, superClass);
+          OWLClassExpression subClass = cast.getSubClass();
+          OWLClassExpression superClass = cast.getSuperClass();
         fictitiousSet = createFictitious(subClass, superClass);
+        for(OWLAxiom ax : fictitiousSet){
+            OWLSubClassOfAxiom cast2 = (OWLSubClassOfAxiom) ax;
+            OWLClassExpression subClass2 = cast2.getSubClass();
+            OWLClassExpression superClass2 = cast2.getSuperClass();
+            subAndSuperCheckBottom(subClass2, superClass2);
+        }
         mergedSubAxiomsSet.addAll(this.normalizedAxiomsSet);
         mergedSubAxiomsSet.addAll(normalization(fictitiousSet));
-        System.out.println(mergedSubAxiomsSet);
         initializeMapping(mergedSubAxiomsSet);
         applyingCompletionRules(mergedSubAxiomsSet);
         return this.S.get(this.df.getOWLClass("#FIT0")).contains(this.df.getOWLClass("#FIT1"));
@@ -99,7 +103,6 @@ public class MyReasoner {
         List<Boolean> checkCR = new LinkedList<>();
         while (repeatLoop) {
             repeatLoop = false;
-            System.out.println("INIZIO PASSO");
             for (OWLClassExpression key : this.S.keySet()) {
                 checkCR.add(CR1(key, mergedSubClassAxioms));
                 checkCR.add(CR2(key, mergedSubClassAxioms));
@@ -113,8 +116,6 @@ public class MyReasoner {
                 }
                 checkCR.clear();
             }
-            System.out.println(this.S);
-            System.out.println(this.R);
             for(OWLObjectPropertyExpression key : this.R.keySet()){
                 checkCR.add(CR4(key, mergedSubClassAxioms));
                 checkCR.add(CR5(key));
@@ -126,8 +127,6 @@ public class MyReasoner {
                 }
                 checkCR.clear();
             }
-            System.out.println(this.S);
-            System.out.println(this.R);
             DefaultDirectedGraph<OWLClassExpression, DefaultEdge> graphForCR6 = generateGraph();
             for(OWLClassExpression key1 : this.S.keySet()){
                 for(OWLClassExpression key2 : this.S.keySet()){
@@ -141,11 +140,7 @@ public class MyReasoner {
                     checkCR.clear();
                 }
             }
-            System.out.println(this.S);
-            System.out.println(this.R);
         }
-        System.out.println(this.S);
-        System.out.println(this.R);
     }
 
     private boolean CR1(OWLClassExpression key, Set<OWLSubClassOfAxiom> mergedSubClassAxioms) {
@@ -229,11 +224,14 @@ public class MyReasoner {
                     OWLClassExpression superOfSub = subClassOfAxiom.getSuperClass(); //Prendo lato destro della sussunzione (E)
                     if(leftOfSub.getClassExpressionType().equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)){ //Verifico che lato sinistro sia esiste(r.K)
                         OWLObjectSomeValuesFrom objectSomeValuesFrom = (OWLObjectSomeValuesFrom) leftOfSub;
+                        OWLObjectPropertyExpression relation = objectSomeValuesFrom.getProperty();
                         OWLClassExpression filler = objectSomeValuesFrom.getFiller(); //Prendo la parte interna dell'esistenziale (K)
-                        if(filler.equals(expression)){ //Verifico che K==D'
-                            checkAdd = this.S.get(leftOfPair).add(superOfSub); //Aggiungo a S(C) E
-                            if (checkAdd)
-                                ret = true;
+                        if(relation.equals(key)) {
+                            if (filler.equals(expression)) { //Verifico che K==D'
+                                checkAdd = this.S.get(leftOfPair).add(superOfSub); //Aggiungo a S(C) E
+                                if (checkAdd)
+                                    ret = true;
+                            }
                         }
                     }
                 }
@@ -272,35 +270,11 @@ public class MyReasoner {
                         return this.S.get(key1).addAll(this.S.get(key2));
                     }
                     return false;
-//                    List<OWLClassExpression> shortestPath = path.getVertexList();
-//                    if(shortestPath == null)
-//                        System.out.println("null");
-//                    if(!shortestPath.isEmpty()){
-//                        return this.S.get(key1).addAll(this.S.get(key2));
-//                    }
-//                    return false;
                 }
             }
         }
         return false;
     }
-
-//    private boolean relationOfCR6(OWLClassExpression left, OWLClassExpression target){
-//        for(OWLObjectPropertyExpression r: this.R.keySet()){ //Per ogni relazione r
-//            for(Pair<OWLClassExpression,OWLClassExpression> pair : this.R.get(r)){//Prendiamo il pair
-//                OWLClassExpression leftOfPair = pair.getKey();
-//                OWLClassExpression rightOfPair = pair.getValue();
-//                if(leftOfPair.equals(left)) {
-//                    if(rightOfPair.equals(target)) //Caso base
-//                        return true;
-//                    if(relationOfCR6(rightOfPair,target)) //Se hai raggiunto un caso base nella ricorsione, puoi terminare con true
-//                        return true;
-//                }
-//
-//            }
-//        }
-//        return false;
-//    }
 
     private DefaultDirectedGraph<OWLClassExpression, DefaultEdge> generateGraph(){
         DefaultDirectedGraph<OWLClassExpression, DefaultEdge> g = new DefaultDirectedGraph<>(DefaultEdge.class);
@@ -363,18 +337,6 @@ public class MyReasoner {
             }
             OWLSubClassOfAxiom normalizedSubClass = this.df.getOWLSubClassOfAxiom(leftPair.getValue(), rightPair.getValue());
             resultSet.add(normalizedSubClass);
-            System.out.println("FIRST");
-            System.out.println(leftPair.getKey());
-            System.out.println("SECOND");
-            System.out.println(leftPair.getValue());
-
-            System.out.println("FIRST");
-            System.out.println(rightPair.getKey());
-            System.out.println("SECOND");
-            System.out.println(rightPair.getValue());
-
-            System.out.println("NORMALIZED CLASS");
-            System.out.println(normalizedSubClass);
         }
         return resultSet;
     }

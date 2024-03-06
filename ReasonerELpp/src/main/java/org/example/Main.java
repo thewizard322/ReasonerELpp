@@ -9,16 +9,16 @@ public class Main {
     public static void main(String[] args) throws OWLOntologyCreationException {
         OWLOntologyManager man = OWLManager.createOWLOntologyManager();
         OWLOntology o = man.loadOntologyFromOntologyDocument(new File("ReasonerELpp/data/CR1_2_3_TEST.owx"));
-        OWLDataFactory df = man.getOWLDataFactory();
-        MyReasoner myReasoner = new MyReasoner(o);
-        IRI IOR = o.getOntologyID().getOntologyIRI().get();
-        OWLClass class1 = df.getOWLClass(IOR + "#F");
-        OWLClass class2 = df.getOWLClass(IOR + "#A");
-        OWLClass class3 = df.getOWLClass(IOR + "#B");
-        OWLIndividual individualD = df.getOWLNamedIndividual(IOR + "#d");
-        OWLObjectOneOf objectOneOfD = df.getOWLObjectOneOf(individualD);
-        OWLObjectIntersectionOf intersectionOf = df.getOWLObjectIntersectionOf(class1,class2);
-        OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(class1,class2);
-        System.out.println(myReasoner.doQuery(query));
+        Test myTest = new Test(o);
+        myTest.test1(); //true
+        myTest.test2(); //true
+        myTest.test3(); //false
+        myTest.test4(); //true
+        myTest.test5(); //true
+        myTest.test6(); //true
+        myTest.test7(); //false
+        myTest.test8(); //true
+        myTest.test9(); //false
+        myTest.test10(); //false
     }
 }

@@ -55,6 +55,15 @@
         <Class IRI="#P"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#Q"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#R"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#S"/>
+    </Declaration>
+    <Declaration>
         <ObjectProperty IRI="#r1"/>
     </Declaration>
     <Declaration>
@@ -111,6 +120,27 @@
         </ObjectIntersectionOf>
     </SubClassOf>
     <SubClassOf>
+        <Class IRI="#H"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#r3"/>
+            <ObjectIntersectionOf>
+                <Class IRI="#A"/>
+                <Class IRI="#B"/>
+            </ObjectIntersectionOf>
+        </ObjectSomeValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Q"/>
+        <Class abbreviatedIRI="owl:Nothing"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#S"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#r4"/>
+            <Class IRI="#Q"/>
+        </ObjectSomeValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
         <ObjectIntersectionOf>
             <Class IRI="#D"/>
             <Class IRI="#E"/>
@@ -144,6 +174,56 @@
             </ObjectSomeValuesFrom>
         </ObjectIntersectionOf>
         <Class IRI="#A"/>
+    </SubClassOf>
+    <SubClassOf>
+        <ObjectIntersectionOf>
+            <Class IRI="#M"/>
+            <Class IRI="#N"/>
+        </ObjectIntersectionOf>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#r3"/>
+            <Class IRI="#O"/>
+        </ObjectSomeValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
+        <ObjectOneOf>
+            <NamedIndividual IRI="#x"/>
+        </ObjectOneOf>
+        <Class IRI="#H"/>
+    </SubClassOf>
+    <SubClassOf>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#r3"/>
+            <Class IRI="#O"/>
+        </ObjectSomeValuesFrom>
+        <ObjectIntersectionOf>
+            <Class IRI="#I"/>
+            <Class IRI="#P"/>
+            <ObjectSomeValuesFrom>
+                <ObjectProperty IRI="#r4"/>
+                <Class IRI="#L"/>
+            </ObjectSomeValuesFrom>
+        </ObjectIntersectionOf>
+    </SubClassOf>
+    <SubClassOf>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#r3"/>
+            <ObjectIntersectionOf>
+                <Class IRI="#A"/>
+                <Class IRI="#B"/>
+            </ObjectIntersectionOf>
+        </ObjectSomeValuesFrom>
+        <ObjectIntersectionOf>
+            <Class IRI="#I"/>
+            <Class IRI="#L"/>
+        </ObjectIntersectionOf>
+    </SubClassOf>
+    <SubClassOf>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#r4"/>
+            <Class IRI="#L"/>
+        </ObjectSomeValuesFrom>
+        <Class IRI="#B"/>
     </SubClassOf>
 </Ontology>
 
