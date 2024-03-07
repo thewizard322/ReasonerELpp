@@ -31,17 +31,16 @@ public class MyReasoner {
     }
 
     public boolean doQuery(OWLSubClassOfAxiom query) {
-        Set<OWLAxiom> fictitiousSet = new HashSet<>();
-        OWLSubClassOfAxiom cast = (OWLSubClassOfAxiom) query;
+        Set<OWLAxiom> fictitiousSet;
         Set<OWLSubClassOfAxiom> mergedSubAxiomsSet = new HashSet<>();
 
-          OWLClassExpression subClass = cast.getSubClass();
-          OWLClassExpression superClass = cast.getSuperClass();
+          OWLClassExpression subClass = query.getSubClass();
+          OWLClassExpression superClass = query.getSuperClass();
         fictitiousSet = createFictitious(subClass, superClass);
         for(OWLAxiom ax : fictitiousSet){
-            OWLSubClassOfAxiom cast2 = (OWLSubClassOfAxiom) ax;
-            OWLClassExpression subClass2 = cast2.getSubClass();
-            OWLClassExpression superClass2 = cast2.getSuperClass();
+            OWLSubClassOfAxiom cast = (OWLSubClassOfAxiom) ax;
+            OWLClassExpression subClass2 = cast.getSubClass();
+            OWLClassExpression superClass2 = cast.getSuperClass();
             subAndSuperCheckBottom(subClass2, superClass2);
         }
         mergedSubAxiomsSet.addAll(this.normalizedAxiomsSet);
@@ -166,7 +165,7 @@ public class MyReasoner {
 
     private boolean CR2(OWLClassExpression key, Set<OWLSubClassOfAxiom> mergedSubClassAxioms) {
         boolean checkAdd, ret = false;
-        List<OWLClassExpression> listClass = new ArrayList<OWLClassExpression>(this.S.get(key));
+        List<OWLClassExpression> listClass = new ArrayList<>(this.S.get(key));
         for (int i = 0; i < listClass.size(); i++)
             for (int j = i + 1; j < listClass.size(); j++) {
                 OWLObjectIntersectionOf intersectionOf = this.df.getOWLObjectIntersectionOf(listClass.get(i), listClass.get(j));
@@ -350,7 +349,6 @@ public class MyReasoner {
             returnPair = new Pair<Set<OWLSubClassOfAxiom>, OWLClassExpression>(set, subClass);
         } else if (typeSubClass.equals(ClassExpressionType.OBJECT_INTERSECTION_OF)) { //Verifica se è intersezione
             OWLObjectIntersectionOf intersectionOf = (OWLObjectIntersectionOf) subClass;
-            int subClassSize = intersectionOf.getOperandsAsList().size();
             returnPair = normalizeIntersectionOf(intersectionOf); //Il pair è ritornato dalla funzione chiamata
         } else if (typeSubClass.equals(ClassExpressionType.OBJECT_SOME_VALUES_FROM)) {
             OWLObjectSomeValuesFrom objectSomeValuesFrom = (OWLObjectSomeValuesFrom) subClass;

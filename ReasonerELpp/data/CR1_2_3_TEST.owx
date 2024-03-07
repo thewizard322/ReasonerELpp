@@ -134,6 +134,17 @@
         <Class abbreviatedIRI="owl:Nothing"/>
     </SubClassOf>
     <SubClassOf>
+        <Class IRI="#R"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#r4"/>
+            <ObjectIntersectionOf>
+                <Class IRI="#A"/>
+                <Class IRI="#B"/>
+                <Class IRI="#G"/>
+            </ObjectIntersectionOf>
+        </ObjectSomeValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
         <Class IRI="#S"/>
         <ObjectSomeValuesFrom>
             <ObjectProperty IRI="#r4"/>
@@ -186,6 +197,17 @@
         </ObjectSomeValuesFrom>
     </SubClassOf>
     <SubClassOf>
+        <ObjectIntersectionOf>
+            <ObjectOneOf>
+                <NamedIndividual IRI="#x"/>
+            </ObjectOneOf>
+            <ObjectOneOf>
+                <NamedIndividual IRI="#y"/>
+            </ObjectOneOf>
+        </ObjectIntersectionOf>
+        <Class IRI="#R"/>
+    </SubClassOf>
+    <SubClassOf>
         <ObjectOneOf>
             <NamedIndividual IRI="#x"/>
         </ObjectOneOf>
@@ -224,6 +246,16 @@
             <Class IRI="#L"/>
         </ObjectSomeValuesFrom>
         <Class IRI="#B"/>
+    </SubClassOf>
+    <SubClassOf>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#r4"/>
+            <ObjectIntersectionOf>
+                <Class IRI="#A"/>
+                <Class IRI="#B"/>
+            </ObjectIntersectionOf>
+        </ObjectSomeValuesFrom>
+        <Class IRI="#O"/>
     </SubClassOf>
 </Ontology>
 
