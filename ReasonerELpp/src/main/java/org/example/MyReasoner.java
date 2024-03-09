@@ -17,8 +17,8 @@ public class MyReasoner {
     private OWLDataFactory df;
     private int universalTempCount = 0;
     private Set<OWLSubClassOfAxiom> normalizedAxiomsSet = null;
-    public Map<OWLClassExpression, Set<OWLClassExpression>> S = null;
-    public Map<OWLObjectPropertyExpression, Set<Pair<OWLClassExpression, OWLClassExpression>>> R = null;
+    private Map<OWLClassExpression, Set<OWLClassExpression>> S = null;
+    private Map<OWLObjectPropertyExpression, Set<Pair<OWLClassExpression, OWLClassExpression>>> R = null;
 
     public MyReasoner(OWLOntology o) {
         this.ontology = o;
@@ -52,8 +52,8 @@ public class MyReasoner {
 
     private Set<OWLAxiom> createFictitious(OWLClassExpression subClass, OWLClassExpression superClass) {
         Set<OWLAxiom> returnSet = new HashSet<>();
-        OWLClass fit0 = this.df.getOWLClass("#FIT0");
-        OWLClass fit1 = this.df.getOWLClass("#FIT1");
+        OWLClass fit0 = this.df.getOWLClass(IRI.create("#FIT0"));
+        OWLClass fit1 = this.df.getOWLClass(IRI.create("#FIT1"));
         OWLSubClassOfAxiom sub1 = this.df.getOWLSubClassOfAxiom(fit0, subClass);
         OWLSubClassOfAxiom sub2 = this.df.getOWLSubClassOfAxiom(superClass, fit1);
         returnSet.add(sub1);
@@ -140,6 +140,8 @@ public class MyReasoner {
                 }
             }
         }
+//        System.out.println(this.S);
+//        System.out.println(this.R);
     }
 
     private boolean CR1(OWLClassExpression key, Set<OWLSubClassOfAxiom> mergedSubClassAxioms) {
