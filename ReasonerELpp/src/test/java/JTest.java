@@ -41,6 +41,7 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(intersectionOf,inclusionClass);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -53,6 +54,7 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(intersectionOf,inclusionClass);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -65,6 +67,7 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(inclusionClass,intersectionOf);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -80,6 +83,7 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(intersectionOf,inclusionClass);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));    }
 
     @org.junit.Test
@@ -96,6 +100,8 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(intersectionOfSub,intersectionOfSuper);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));    }
 
     @org.junit.Test
@@ -106,6 +112,8 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectOneOf,classI);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));    }
 
     @org.junit.Test
@@ -116,6 +124,8 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectOneOf,classA);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));    }
 
     @org.junit.Test
@@ -130,6 +140,8 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectOneOf,objectSomeValuesFrom);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));    }
 
     @org.junit.Test
@@ -144,6 +156,8 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectOneOf,objectSomeValuesFrom);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));    }
 
     @org.junit.Test
@@ -159,6 +173,8 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectOneOf,objectSomeValuesFrom);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));    }
 
     @org.junit.Test
@@ -177,6 +193,8 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(intersectionOfSub,objectSomeValuesFrom);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));    }
 
     @org.junit.Test
@@ -194,6 +212,8 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(intersectionOfSub,objectSomeValuesFrom);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -209,6 +229,8 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectOneOfY,objectSomeValuesFrom);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -225,6 +247,9 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(classF, objectSomeValuesFromR3);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(), complementOf);
+        System.out.println(query);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query), !hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -239,6 +264,8 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectSomeValuesFromR3,classS);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -257,6 +284,8 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectSomeValuesFromR2,objectSomeValuesFromR4);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -275,6 +304,8 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectSomeValuesFromR2,objectSomeValuesFromR4);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -293,6 +324,8 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectSomeValuesFromR2,objectSomeValuesFromR4);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -309,6 +342,8 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectSomeValuesFromR2,objectSomeValuesFromR4);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -325,6 +360,9 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectSomeValuesFromForQuery,classA);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(query);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -341,6 +379,10 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectSomeValuesFromForQuery,classE);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(query);
+
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -359,6 +401,10 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectSomeValuesFromForQuery,intersectionOf2);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(query);
+
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -375,6 +421,10 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectSomeValuesFromR1,objectSomeValuesFromR2);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(query);
+
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -391,6 +441,10 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectSomeValuesFromR1,objectSomeValuesFromR2);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(query);
+
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
@@ -407,6 +461,8 @@ public class JTest {
         OWLSubClassOfAxiom query = df.getOWLSubClassOfAxiom(objectSomeValuesFromR1,objectSomeValuesFromR2);
         OWLObjectComplementOf complementOf = df.getOWLObjectComplementOf(query.getSuperClass());
         OWLObjectIntersectionOf negIntersection = df.getOWLObjectIntersectionOf(query.getSubClass(),complementOf);
+        System.out.println(reasoner.doQuery(query));
+
         assertEquals(reasoner.doQuery(query),!hermitReasoner.isSatisfiable(negIntersection));
     }
 
