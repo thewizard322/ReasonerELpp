@@ -140,8 +140,6 @@ public class MyReasoner {
                 }
             }
         }
-//        System.out.println(this.S);
-//        System.out.println(this.R);
     }
 
     private boolean CR1(OWLClassExpression key, Set<OWLSubClassOfAxiom> mergedSubClassAxioms) {
@@ -468,8 +466,6 @@ public class MyReasoner {
     }
 
     private OWLClass createTempClass() {
-        //IRI IOR = ontology.getOntologyID().getOntologyIRI().get();
-        //OWLClass tempClass = this.df.getOWLClass(IRI.create(IOR + "#TEMP" + universalTempCount));
         OWLClass tempClass = this.df.getOWLClass(IRI.create("#TEMP" + universalTempCount));
         universalTempCount++;
         return tempClass;
